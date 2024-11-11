@@ -1,0 +1,58 @@
+from tkinter import *
+from tkinter import messagebox as MessageBox
+import yt_dlp as youtube_dl
+
+'''
+Lógica detrás del programa
+'''
+def accion():
+    enlace = videos.get()  # Obtiene el enlace desde el Entry
+    ydl_opts = {
+        'format': 'best',  # Obtiene la mejor calidad de video disponible
+        'outtmpl': '%(title)s.%(ext)s',  # Nombre de archivo de salida basado en el título
+    }
+ 
+    try:
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([enlace])  # Descarga el video usando yt_dlp
+        MessageBox.showinfo("Éxito", "Video descargado correctamente.")
+    except Exception as e:
+        MessageBox.showerror("Error", f"Ocurrió un error: {e}")
+
+def popup():
+    MessageBox.showinfo("Sobre mí", "Enlace a mi perfil de Github: https://github.com/maujimenez4")
+
+def limpiar():
+    enlace = videos.delete(0, END) #Limpia el contenido del Entry
+
+'''
+Interfaz gráfica del programa
+'''
+root = Tk()  # Crea la ventana
+root.config(bd=15)  # Bordes
+root.title("Script para descargar videos")  # Título de la ventana
+
+#imagen = PhotoImage(file="youtube.jpg")  # Imagen alusiva
+foto = Label(root, bd=0)  # Configuración de la imagen
+foto.grid(row=0, column=0)  # Posición de la imagen
+
+menubar = Menu(root)  # Menú en la parte superior
+root.config(menu=menubar)
+helpmenu = Menu(menubar, tearoff=0)
+
+menubar.add_cascade(label="Para más información", menu=helpmenu)
+helpmenu.add_command(label="Información del autor", command=popup)
+menubar.add_command(label="Salir", command=root.destroy)
+
+instrucciones = Label(root, text="Pegue el link del video abajo\n")  # Texto con instrucciones
+instrucciones.grid(row=0, column=1)
+
+videos = Entry(root)  # Caja de texto para pegar enlace
+videos.grid(row=1, column=1)
+
+boton_descarga = Button(root, text="Descargar", command=accion)  # Botón de descarga
+boton_descarga.grid(row=2, column=1)
+boton_limpiar = Button(root, text ="Limpiar", command=limpiar)
+boton_limpiar.grid(row=2, column=2)
+
+root.mainloop()  # Inicia la interfaz gráfica
